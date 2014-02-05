@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+	<item
+	    android:id="@+id/signout"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_signout"
+        android:showAsAction="always"
+        android:title="@string/signout"/>
+    
+	<item
+	    android:id="@+id/refresh"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="always"
+        android:title="@string/refresh"/>
+	
+	<item
+	    android:id="@+id/compose"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_compose"
+        android:showAsAction="always"
+        android:title="@string/compose"/>
+	
+	
+</menu>

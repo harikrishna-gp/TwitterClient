@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <ImageView
+    	android:id="@+id/ivProfilePic"
+    	android:contentDescription="@string/user_profile_pic"
+	    android:paddingTop="5dp"
+	    android:paddingLeft="5dp"
+	    android:paddingRight="5dp"
+	    android:paddingBottom="5dp"
+	    android:layout_alignParentLeft="true"
+	    android:layout_alignParentTop="true"
+	    android:layout_width="70dp"
+	    android:layout_height="70dp"
+    />
+    
+    <TextView 
+    	android:id="@+id/tvName"
+    	android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/ivProfilePic"
+        android:layout_alignParentTop="true"
+        android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+    />
+    
+    <TextView
+        android:id="@+id/tvScreenName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_alignBaseline="@id/tvName"
+        android:layout_toRightOf="@id/tvName"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#AFBDB8"
+    />
+    
+    <TextView
+      android:id="@+id/tvTimestamp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_toRightOf="@id/ivProfilePic"
+      android:layout_below="@id/tvName"
+      android:layout_marginTop="5dp"
+      android:textAppearance="?android:attr/textAppearanceSmall"
+      android:textColor="#5AD79F"
+    />
+    
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/ivProfilePic"
+        android:layout_below="@id/tvTimestamp"
+    />
+
+</RelativeLayout>
