@@ -53,7 +53,7 @@ public class TimelineActivity extends Activity {
         lvTweets.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-//            	loadTimeLine(true);
+            	loadTimeLine(true);
             }
         });	
         loadTimeLine(true);

@@ -36,6 +36,7 @@ public class TwitterClient extends OAuthBaseClient {
     
 	public void invalidateToken(AsyncHttpResponseHandler handler){
     	Token t = client.getAccessToken();
+    	Log.e("Token", t.getToken());
     	String url = "https://api.twitter.com/oauth2/invalidate_token";
     	client.post(url, new RequestParams("access_token", t.getToken()), handler);	
     }
