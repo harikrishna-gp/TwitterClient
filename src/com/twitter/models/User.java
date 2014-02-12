@@ -14,6 +14,34 @@ import com.activeandroid.annotation.Table;
 @Table(name = "Users")
 public class User extends Model implements Parcelable {
 	
+	public void setScreenName(String screenName) {
+		this.screenName = screenName;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setProfilePicUrl(String profilePicUrl) {
+		this.profilePicUrl = profilePicUrl;
+	}
+
+	public void setFollowersCount(int followersCount) {
+		this.followersCount = followersCount;
+	}
+
+	public void setFriendsCount(int friendsCount) {
+		this.friendsCount = friendsCount;
+	}
+
+	public void setFollowingCount(int followingCount) {
+		this.followingCount = followingCount;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	private static final String JSON_PARSING = "JSON_PARSING";
 	
 	@Column(name = "screen_name")
@@ -34,6 +62,36 @@ public class User extends Model implements Parcelable {
 		return profilePicUrl;
 	}
 	
+	@Column(name = "tweet_count")
+	private int tweetCount;
+	public int getNumTweets(){
+		return tweetCount;
+	}
+
+	@Column(name = "followers_count")
+	private int followersCount;
+	public int getFollowersCount(){
+		return followersCount;
+	}
+	
+	@Column(name = "friends_count")
+	private int friendsCount;
+	public int getFriendsCount(){
+		return this.friendsCount;
+	}
+
+	@Column(name = "following_count")
+	private int followingCount;
+	public int getFollowingCount(){
+    	return followingCount;
+    }
+
+	@Column(name = "description")
+	private String description;
+    public String getDescription(){
+    	return description;
+    }
+	
 	public User() {
 		super();
 	}
@@ -44,10 +102,23 @@ public class User extends Model implements Parcelable {
 		this.profilePicUrl = user.profilePicUrl;
 	}
 	
-	public User(JSONObject user) {
-		setName(user);
-		setScreenName(user);
-		setProfilePicUrl(user);
+
+	public User(JSONObject json) {
+//		setName(user);
+//		setScreenName(user);
+//		setProfilePicUrl(user);
+//		User u = new User();
+		try{
+			this.name = json.getString("name");
+			this.screenName=json.getString("screen_name");
+			this.profilePicUrl =json.getString("profile_image_url");
+			this.followersCount = json.getInt("followers_count");
+			this.friendsCount = json.getInt("friends_count");
+			this.followingCount = json.getInt("friends_count");
+			this.description = json.getString("description");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	private void setScreenName(JSONObject user) {

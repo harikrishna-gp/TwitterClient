@@ -61,25 +61,66 @@ public class TwitterClient extends OAuthBaseClient {
 		String url = getApiUrl("statuses/home_timeline.json");
     	client.get(url, params, handler);	
     }
+
+	public void getMentions(AsyncHttpResponseHandler handler){
+    	String url = getApiUrl("statuses/mentions_timeline.json");
+    	client.get(url, new RequestParams("count", "25"), handler);	
+    }
+	public void loadFeed(String endpoint, String screenName, long id, AsyncHttpResponseHandler handler ){
+		if (endpoint.equals("HomeTimeLine")) {
+			getMoreHomeTimeline(id, handler);
+		}
+		else if (endpoint.equals("UserTimeLine")) {
+			getMoreUserTimeline(id, screenName , handler);
+		}
+		else if (endpoint.equals("MentionsTimeLine")) {
+			getMoreMentions(id, handler);
+		}
+		
+	}
+	public void getMoreMentions( Long id, AsyncHttpResponseHandler handler ){
+    	RequestParams params = new  RequestParams(); 
+		if (id == 0) {
+			params.put("count", "25");
+		}
+		else {
+			params.put("max_id", id.toString());
+		}
+		String url = getApiUrl("statuses/mentions_timeline.json");
+    	client.get(url, params, handler);	
+    }
 	
 	public void postTweet(String tweet, AsyncHttpResponseHandler handler){
     	String url = getApiUrl("statuses/update.json");
     	client.post(url, new RequestParams("status", tweet), handler);
     }
     
-	public void getUser(AsyncHttpResponseHandler handler){
-		//https://api.twitter.com/1/account/verify_credentials.json
-		
-		String url = getApiUrl("account/verify_credentials.json");
-		client.post(url, new RequestParams(), handler);
+	public void getUser(String userHdl, AsyncHttpResponseHandler handler){
+		String url = getApiUrl("users/show.json");
+		client.get(url, new RequestParams("screen_name", userHdl), handler);
     }
-		
-    /* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
-     * 	  i.e getApiUrl("statuses/home_timeline.json");
-     * 2. Define the parameters to pass to the request (query or body)
-     *    i.e RequestParams params = new RequestParams("foo", "bar");
-     * 3. Define the request method and make a call to the client
-     *    i.e client.get(apiUrl, params, handler);
-     *    i.e client.post(apiUrl, params, handler);
-     */
+	
+	public void getLoggedinUser(AsyncHttpResponseHandler handler){
+		String url = getApiUrl("account/verify_credentials.json");
+		client.get(url, null, handler);
+    }
+	public void getMoreUserTimeline( Long id, String screenName, AsyncHttpResponseHandler handler ){
+		Log.e("USER TIMELINE", "ScreeenName :" + screenName);
+    	RequestParams params = new  RequestParams(); 
+		if (id == 0) {
+			params.put("count", "25");
+		}
+		else {
+			params.put("max_id", id.toString());
+		}
+		params.put("screen_name", screenName);
+		String url = getApiUrl("statuses/user_timeline.json");
+    	client.get(url, params, handler);	
+    }
+
+	public void getUserTimeline(String screenName, AsyncHttpResponseHandler handler){
+        String currentAPI="statuses/user_timeline.json";
+        String url = getApiUrl(currentAPI);
+        client.get(url,null, handler);
+    }
 }

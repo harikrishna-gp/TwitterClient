@@ -2,6 +2,8 @@ package com.twitter;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +11,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.twitter.models.Tweet;
 import com.twitter.models.User;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class TweetsAdapter extends ArrayAdapter<Tweet> {
-
+	
 	public TweetsAdapter(Context context, ArrayList<Tweet> tweets) {
 		super(context, 0, tweets);
 	}
@@ -48,7 +50,20 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 			tvScreenName.setText("@" + user.getScreenName());
 		}
 		tvTimestamp.setText(tweet.getTimestamp());
+		ivProfilePic.setTag(user.getScreenName());
+		ivProfilePic.setOnClickListener(new View.OnClickListener() {
+			@Override
+	        public void onClick(View v)
+	        {
+	            Intent intnt = new Intent(getContext(), ProfileActivity.class);
+	            Log.e("INTENT USER", v.getTag().toString() );
+	            intnt.putExtra("screenName", v.getTag().toString() );
+	            getContext().startActivity(intnt);
+	        }
+	    });
+
 
 		return view;
 	}
 }
+

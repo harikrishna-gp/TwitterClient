@@ -2,63 +2,65 @@ package com.twitter;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.twitter.fragments.HomeTimelineFragment;
+import com.twitter.fragments.MentionsFragment;
+import com.twitter.fragments.TweetsListFragment;
 import com.twitter.models.Tweet;
 import com.twitter.models.User;
 
-import eu.erikw.PullToRefreshListView;
-import eu.erikw.PullToRefreshListView.OnRefreshListener;
 
-
-public class TimelineActivity extends Activity {
+public class TimelineActivity extends FragmentActivity implements ActionBar.TabListener {
 	private static final int TWEETS_PER_LOAD = 25;
 	private final int COMPOSE_CODE = 100;
 	private ArrayList<Tweet> tweets;
 	private TweetsAdapter tweetsAdptr;
-	private PullToRefreshListView  lvTweets;
+	TweetsListFragment fragmentTweets;
 	private User currentUser;
-	private long recentTweetId=1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_timeline);
-		tweets = new ArrayList<Tweet>();
-		tweetsAdptr = new TweetsAdapter(this, tweets);
-		lvTweets = (PullToRefreshListView )findViewById(R.id.lvTweets);
-		lvTweets.setAdapter(tweetsAdptr);
-		lvTweets.setOnScrollListener(new EndlessScrollListener() {
-	        public void onLoadMore(int page, int totalItemsCount) {
-	        	Log.e ("Loading", "Loading More");
-	        	loadMore();
-	        	return;
-	        }
-	        public void loadMore() {
-                Log.e("DEBUG", "Scroll loading page ");
-                loadTimeLine(false);
-            }
-    	});
+        setupNavigationTabs();
+    }
 
-        lvTweets.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-            	loadTimeLine(true);
-            }
-        });	
-        loadTimeLine(true);
-	}
+    public void setupNavigationTabs(){
 
+        ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar.setDisplayShowTitleEnabled(true);
+
+        ActionBar.Tab tabHome = actionBar.newTab().setText("HOME").setTag("TimelineFragment").
+        									setIcon(R.drawable.ic_home).setTabListener(this);
+
+        ActionBar.Tab tabMentions = actionBar.newTab().setText("MENTIONS").setTag("MentionsFragment").
+        									setIcon(R.drawable.ic_mentions).setTabListener(this);
+
+        actionBar.addTab(tabHome);
+        actionBar.addTab(tabMentions);
+        actionBar.selectTab(tabHome);
+
+    }
+
+    public void onProfileView(MenuItem mi)
+    {
+    	Intent intnt = new Intent(this, ProfileActivity.class);
+		startActivity(intnt);
+    }
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -87,7 +89,7 @@ public class TimelineActivity extends Activity {
 		switch (item.getItemId()) {
 			case R.id.compose:
 				if (currentUser == null) {
-					TwitterApp.getRestClient().getUser(new JsonHttpResponseHandler() {
+					TwitterApp.getRestClient().getLoggedinUser(new JsonHttpResponseHandler() {
 						public void onSuccess(JSONObject user) {
 							Log.e("USER INFO" ,"GOT IT");
 						}
@@ -104,15 +106,19 @@ public class TimelineActivity extends Activity {
 				startActivityForResult(intnt, COMPOSE_CODE);
 				return true;
 			case R.id.refresh:
-		        Log.d("Refresh Button", "Reloading the timeline");
-				loadTimeLine(true);
+//				loadTimeLine(true);
 		        return true;
 		        
 			case R.id.signout:
-		        Log.d("Signout", "Got it");
 		        triggerReLogin();
-//		        this.finish();
+		        this.finish();
 		        return true;		        
+			case R.id.profile:
+		        Log.d("Profile", "Got it");
+		        triggerReLogin();
+		        this.finish();
+		        return true;		        
+
 			default:
 				return super.onOptionsItemSelected(item);
 	    }
@@ -139,36 +145,31 @@ public class TimelineActivity extends Activity {
 		tweetsAdptr.insert(tw, 0);
 //		tw.save();
 	}
-	
-	private void loadTimeLine(final Boolean freshList) {
-		long recentId  = recentTweetId - 1;
-		if (freshList) {
-			recentId  = 0;
-		}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
 		
-		TwitterApp.getRestClient().getMoreHomeTimeline(recentId, new JsonHttpResponseHandler() {
-			@Override
-			public void onSuccess(JSONArray jsonTweetsArray) {
-				if (freshList) {
-					tweetsAdptr.clear();
-				}
-				tweetsAdptr.addAll(Tweet.tweetsFromJsonArray(jsonTweetsArray));
-				
-				// Only update lowest tweet id if it is valid.
-				int index = tweetsAdptr.getCount() - 1;
-				if (index >= 0)
-				{
-					long tweet_id = tweetsAdptr.getItem(index).getTweetId();
-					if (tweet_id != 0) {
-						recentTweetId = tweet_id;
-					}
-				}
-			}
-			
-			public void onFailure(Throwable e, JSONObject error) {
-			    Log.e("ERROR", e.toString());
-			    Log.e("ERROR", error.toString());
-			}
-		});
 	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		FragmentManager manager = getSupportFragmentManager();
+	    android.support.v4.app.FragmentTransaction fts = manager.beginTransaction();
+
+	    if(tab.getTag() == "TimelineFragment"){
+	    	fts.replace(R.id.fragment_container,new HomeTimelineFragment());
+	    }
+	    else
+	    {
+	    	fts.replace(R.id.fragment_container,new MentionsFragment());
+	    }
+	    fts.commit();		
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}	
 }

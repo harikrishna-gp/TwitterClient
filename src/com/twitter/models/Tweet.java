@@ -60,7 +60,7 @@ public class Tweet extends Model {
 		return user;
 	}
 	
-	@Column(name = "tweet_id")
+	@Column(name = "tweetId")
 	private String tweetId;
 	public long getTweetId() {
 		return Long.parseLong(tweetId);
@@ -141,4 +141,20 @@ public class Tweet extends Model {
 		
 		return tweetList;
 	}
+
+//	public static Tweet fromJson(JSONObject jsonObject){
+//		Tweet tweet = new Tweet();
+//		try{
+////			tweet.jsonObject = jsonObect;
+//			tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
+//			tweet.tweetId = String.valueOf(jsonObject.getLong("id"));
+//			tweet.message = jsonObject.getString("text");
+//			tweet.favorited = jsonObject.getBoolean("favorited");
+//		}catch(JSONException e){
+//			e.printStackTrace();
+//			return null;
+//		}
+//		return tweet;
+//	}
+
 }

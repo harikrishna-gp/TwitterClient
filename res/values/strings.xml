@@ -16,4 +16,10 @@
     <string name="send_tweet">Tweet</string>
     <string name="cancel_tweet">Cancel</string>
     <string name="failed_to_tweet">Tweet Failed</string>
+    <string name="profile">Profile</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="firstname">First Name</string>
+    <string name="status">Status</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
 </resources>
